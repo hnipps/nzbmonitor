@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net"
 	"strings"
 
@@ -14,20 +15,28 @@ var q chan string
 func main() {
 	listener, err := net.Listen("tcp", ":6666")
 	if err != nil {
-		fmt.Println("Error starting server:", err)
+		log.Println("Error starting server:", err)
 		return
 	}
 	defer listener.Close()
 
-	q = make(chan string)
+	q = make(chan string, 100)
+
+	refresh.Prepare(
+		refresh.WithCheckOnly(true),
+		refresh.WithDebug(true),
+		refresh.WithProvider("../provider.json"),
+		refresh.WithMode("pkg"),
+	)
+
 	go consumer(q)
 
-	fmt.Println("Service running on localhost:6666")
+	log.Println("Service running on localhost:6666")
 
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			fmt.Println("Error accepting connection:", err)
+			log.Println("Error accepting connection:", err)
 			continue
 		}
 		go handleConnection(conn)
@@ -46,18 +55,17 @@ func handleConnection(conn net.Conn) {
 
 func processCommand(nzbpath string) string {
 	q <- nzbpath
+	log.Printf("Queued: %s\n", nzbpath)
 	return "Queued"
 }
 
 func consumer(queue <-chan string) {
 	for item := range queue {
-		fmt.Printf("Processing: %s\n", item)
-		refresh.Prepare(
-			refresh.WithNZBFile(item),
-			refresh.WithCheckOnly(true),
-			refresh.WithDebug(true),
-			refresh.WithProvider("../provider.json"),
-		)
-		refresh.Run()
+		log.Printf("Processing: %s\n", item)
+		if _, err := refresh.Run(item); err != nil {
+			log.Printf("Failed: %s\n", item)
+		} else {
+			log.Printf("Completed: %s\n", item)
+		}
 	}
 }
