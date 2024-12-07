@@ -11,7 +11,7 @@ require (
 	github.com/alexflint/go-arg v1.5.1 // indirect
 	github.com/alexflint/go-scalar v1.2.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
-	github.com/hnipps/nzbrefresh v0.0.0-20241207045753-810c0e5f4ff6 // indirect
+	github.com/hnipps/nzbrefresh v0.0.0-20241207051126-a8d6d504e150 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
