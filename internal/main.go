@@ -61,11 +61,13 @@ func processCommand(nzbpath string) string {
 
 func consumer(queue <-chan string) {
 	for item := range queue {
-		log.Printf("Processing: %s\n", item)
-		if _, err := refresh.Run(item); err != nil {
-			log.Printf("Failed: %s\n", item)
-		} else {
-			log.Printf("Completed: %s\n", item)
-		}
+		go func(item string) {
+			log.Printf("Processing: %s\n", item)
+			if _, err := refresh.Run(item); err != nil {
+				log.Printf("Failed: %s\n", item)
+			} else {
+				log.Printf("Completed: %s\n", item)
+			}
+		}(item)
 	}
 }
