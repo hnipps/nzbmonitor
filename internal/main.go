@@ -25,7 +25,7 @@ func main() {
 	refresh.Prepare(
 		refresh.WithCheckOnly(true),
 		refresh.WithDebug(true),
-		refresh.WithProvider("../provider.json"),
+		refresh.WithProvider("./provider.json"),
 		refresh.WithMode("pkg"),
 	)
 
