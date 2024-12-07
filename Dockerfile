@@ -32,4 +32,4 @@ COPY --from=builder /app/provider.json .
 EXPOSE 6666
 
 # Command to run the executable
-CMD ["./nzbmonitor"]
+CMD ["./nzbmonitor", "|&", "tee", "nzbmonitor.log"]
